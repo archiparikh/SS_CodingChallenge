@@ -14,6 +14,17 @@ use App\Exception\MethodNotImplementedException;
 class HardEncryptionAlgorithm extends EncryptionAlgorithm
 {
     /**
+     * @param string $fileContent
+     * @return HardEncryptionAlgorithm
+     */
+    public function with(string $fileContent)
+    {
+        $this->fileContent = $fileContent;
+
+        return $this;
+    }
+
+    /**
      * @return mixed|void
      * @throws MethodNotImplementedException
      */

@@ -25,3 +25,34 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    app.simple_encryption_algorithm:
+      class: App\Cipher\Encryption\SimpleEncryptionAlgorithm
+
+    app.hard_encryption_algorithm:
+      class: App\Cipher\Encryption\HardEncryptionAlgorithm
+
+    app.encryption_algorithm_provider:
+      class: App\Cipher\Encryption\EncryptionAlgorithmProvider
+      arguments: ['@app.simple_encryption_algorithm', '@app.hard_encryption_algorithm']
+
+
+    app.simple_decryption_algorithm:
+      class: App\Cipher\Decryption\SimpleDecryptionAlgorithm
+
+    app.hard_decryption_algorithm:
+      class: App\Cipher\Decryption\HardDecryptionAlgorithm
+
+    app.decryption_algorithm_provider:
+      class: App\Cipher\Decryption\DecryptionAlgorithmProvider
+      arguments: ['@app.simple_decryption_algorithm', '@app.hard_decryption_algorithm']
+
+
+    app.cipher_provider:
+      class: App\Cipher\CipherProvider
+      arguments: ['@app.encryption_algorithm_provider', '@app.decryption_algorithm_provider']
+
+    App\Command\CipherCommand:
+      tags:
+        - { name: 'console.command', command: 'app:cipher' }
+      arguments: ['@app.cipher_provider']

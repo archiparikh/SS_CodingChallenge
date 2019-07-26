@@ -12,6 +12,13 @@ namespace App\Cipher;
  * @package App\DataConverter
  */
 interface CipherProviderInterface {
+    /**
+     * @param object $file
+     * @param string $mode
+     * @param string $complexity
+     * @return CipherProviderInterface
+     */
+    public function with($file, string $mode, string $complexity);
 
     /**
      * @return mixed

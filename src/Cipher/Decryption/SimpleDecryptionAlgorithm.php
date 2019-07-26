@@ -13,6 +13,16 @@ use App\Cipher\CipherConstant;
 
 class SimpleDecryptionAlgorithm extends DecryptionAlgorithm
 {
+    /**
+     * @param string $fileContent
+     * @return SimpleDecryptionAlgorithm
+     */
+    public function with(string $fileContent)
+    {
+        $this->fileContent = $fileContent;
+       
+        return $this;
+    }
 
     /**
      * @return string

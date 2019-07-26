@@ -10,6 +10,8 @@ namespace App\Cipher;
 
 use App\Cipher\Decryption\DecryptionAlgorithmProvider;
 use App\Cipher\Encryption\EncryptionAlgorithmProvider;
+use App\Exception\InvalidCipherComplexityException;
+use App\Exception\InvalidCipherModeException;
 use App\Exception\MethodNotImplementedException;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -36,12 +38,33 @@ class CipherProvider implements CipherProviderInterface {
     private $complexity;
 
     /**
-     * DataConverter constructor.
+     * @var EncryptionAlgorithmProvider
+     */
+    private $encryptionAlgorithmProvider;
+
+    /**
+     * @var DecryptionAlgorithmProvider
+     */
+    private $decryptionAlgorithmProvider;
+
+    /**
+     * CipherProvider constructor.
+     * @param EncryptionAlgorithmProvider $encryptionAlgorithmProvider
+     * @param DecryptionAlgorithmProvider $decryptionAlgorithmProvider
+     */
+    public function __construct(EncryptionAlgorithmProvider $encryptionAlgorithmProvider, DecryptionAlgorithmProvider $decryptionAlgorithmProvider)
+    {
+        $this->encryptionAlgorithmProvider = $encryptionAlgorithmProvider;
+        $this->decryptionAlgorithmProvider = $decryptionAlgorithmProvider;
+    }
+
+    /**
      * @param object $file
      * @param string $mode
      * @param string $complexity
+     * @return CipherProvider
      */
-    public function __construct($file, string $mode, string $complexity)
+    public function with($file, string $mode, string $complexity)
     {
         $this->file = $file;
         $this->mode = $mode;
@@ -50,6 +73,8 @@ class CipherProvider implements CipherProviderInterface {
         if(!$this->isSupported()) {
             throw new InvalidArgumentException('One of the arguments is not valid.');
         }
+
+        return $this;
     }
 
     /**
@@ -63,19 +88,19 @@ class CipherProvider implements CipherProviderInterface {
         }
 
         if(! $this->mode) {
-            throw new InvalidArgumentException('Cipher mode unknown.');
+            throw new InvalidCipherModeException('Cipher mode unknown.');
         }
 
         if(!in_array($this->mode, CipherConstant::CIPHER_MODE)) {
-            throw new InvalidArgumentException('Cipher mode invalid.');
+            throw new InvalidCipherModeException('Cipher mode invalid.');
         }
 
         if(! $this->complexity) {
-            throw new InvalidArgumentException('Cipher complexity unknown.');
+            throw new InvalidCipherComplexityException('Cipher complexity unknown.');
         }
 
         if(!in_array($this->complexity, CipherConstant::CIPHER_COMPLEXITY)) {
-            throw new InvalidArgumentException('Cipher complexity not supported.');
+            throw new InvalidCipherComplexityException('Cipher complexity not supported.');
         }
 
         return true;
@@ -94,11 +119,11 @@ class CipherProvider implements CipherProviderInterface {
         }
 
         if($this->mode == CipherConstant::ENCRYPTION) {
-            return (new EncryptionAlgorithmProvider($fileContent, $this->complexity))->find();
+            return $this->encryptionAlgorithmProvider->find($fileContent, $this->complexity)->writeToFile();
         }
 
         if($this->mode == CipherConstant::DECRYPTION) {
-            return (new DecryptionAlgorithmProvider($fileContent, $this->complexity))->find();
+            return $this->decryptionAlgorithmProvider->find($fileContent, $this->complexity)->writeToFile();
         }
 
         throw new MethodNotImplementedException('Cipher algorithm not implemented.');

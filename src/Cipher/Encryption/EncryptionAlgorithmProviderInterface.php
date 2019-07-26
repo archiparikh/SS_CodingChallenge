@@ -12,8 +12,10 @@ namespace App\Cipher\Encryption;
 interface EncryptionAlgorithmProviderInterface
 {
     /**
-     * @return mixed
+     * @param string $fileContent
+     * @param string $cipherComplexity
+     * @return EncryptionAlgorithm
      */
-    function find();
+    function find(string $fileContent, string $cipherComplexity);
 
 }

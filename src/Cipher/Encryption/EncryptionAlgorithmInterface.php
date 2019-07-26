@@ -11,6 +11,12 @@ namespace App\Cipher\Encryption;
 interface EncryptionAlgorithmInterface
 {
     /**
+     * @param string $fileContent
+     * @return EncryptionAlgorithmInterface
+     */
+    function with(string $fileContent);
+
+    /**
      * @return mixed
      */
     function writeToFile();

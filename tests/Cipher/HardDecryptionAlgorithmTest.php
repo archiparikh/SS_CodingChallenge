@@ -25,7 +25,7 @@ class HardDecryptionAlgorithmTest extends TestCase
      * @return HardDecryptionAlgorithm
      */
     private function setUpService(string $fileContent) {
-        return new HardDecryptionAlgorithm($fileContent);
+        return (new HardDecryptionAlgorithm())->with($fileContent);
     }
 
     /**

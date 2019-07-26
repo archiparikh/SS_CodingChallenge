@@ -14,38 +14,40 @@ use App\Exception\MethodNotImplementedException;
 class DecryptionAlgorithmProvider implements DecryptionAlgorithmProviderInterface
 {
     /**
-     * @var string
+     * @var SimpleDecryptionAlgorithm
      */
-    private $cipherComplexity;
+    private $simpleDecryptionAlgorithm;
 
     /**
-     * @var string
+     * @var HardDecryptionAlgorithm
      */
-    private $fileContent;
+    private $hardDecryptionAlgorithm;
 
     /**
      * EncryptionAlgorithmProvider constructor.
-     * @param $fileContent
-     * @param $cipherComplexity
+     * @param SimpleDecryptionAlgorithm $simpleDecryptionAlgorithm
+     * @param HardDecryptionAlgorithm $hardDecryptionAlgorithm
      */
-    public function __construct($fileContent, $cipherComplexity)
+    public function __construct(SimpleDecryptionAlgorithm $simpleDecryptionAlgorithm, HardDecryptionAlgorithm $hardDecryptionAlgorithm)
     {
-        $this->cipherComplexity = $cipherComplexity;
-        $this->fileContent = $fileContent;
+        $this->simpleDecryptionAlgorithm = $simpleDecryptionAlgorithm;
+        $this->hardDecryptionAlgorithm = $hardDecryptionAlgorithm;
     }
 
     /**
-     * @return mixed
+     * @param $fileContent
+     * @param $cipherComplexity
+     * @return DecryptionAlgorithm
      * @throws MethodNotImplementedException
      */
-    public function find()
+    public function find(string $fileContent, string $cipherComplexity)
     {
 
-        if($this->cipherComplexity == CipherConstant::SIMPLE) {
-            return (new SimpleDecryptionAlgorithm($this->fileContent))->writeToFile();
+        if($cipherComplexity == CipherConstant::SIMPLE) {
+            return $this->simpleDecryptionAlgorithm->with($fileContent);
 
-        } else if($this->cipherComplexity == CipherConstant::HARD) {
-            return (new HardDecryptionAlgorithm($this->fileContent))->writeToFile();
+        } else if($cipherComplexity == CipherConstant::HARD) {
+            return $this->hardDecryptionAlgorithm->with($fileContent);
         }
 
         throw new MethodNotImplementedException('Cipher algorithm not implemented.');

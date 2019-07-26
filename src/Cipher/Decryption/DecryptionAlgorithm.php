@@ -24,12 +24,9 @@ abstract class DecryptionAlgorithm implements DecryptionAlgorithmInterface
     /**
      * DecryptionAlgorithm constructor.
      * @param string $fileContent
+     * @return DecryptionAlgorithm
      */
-    public function __construct(string $fileContent)
-    {
-
-        $this->fileContent = $fileContent;
-    }
+    public abstract function with(string $fileContent);
 
     /**
      * @return string

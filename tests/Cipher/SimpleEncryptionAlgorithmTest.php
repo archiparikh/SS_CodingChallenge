@@ -87,7 +87,7 @@ class SimpleEncryptionAlgorithmTest extends TestCase
      * @return SimpleEncryptionAlgorithm
      */
     private function setUpService(string $fileContent) {
-        return new SimpleEncryptionAlgorithm($fileContent);
+        return (new SimpleEncryptionAlgorithm())->with($fileContent);
     }
 
     /**

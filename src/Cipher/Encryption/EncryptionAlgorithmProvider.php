@@ -15,38 +15,40 @@ use App\Exception\MethodNotImplementedException;
 class EncryptionAlgorithmProvider implements EncryptionAlgorithmProviderInterface
 {
     /**
-     * @var string
+     * @var SimpleEncryptionAlgorithm
      */
-    private $cipherComplexity;
+    private $simpleEncryptionAlgorithm;
 
     /**
-     * @var string
+     * @var HardEncryptionAlgorithm
      */
-    private $fileContent;
+    private $hardEncryptionAlgorithm;
 
     /**
      * EncryptionAlgorithmProvider constructor.
-     * @param string $fileContent
-     * @param string $cipherComplexity
+     * @param SimpleEncryptionAlgorithm $simpleEncryptionAlgorithm
+     * @param HardEncryptionAlgorithm $hardEncryptionAlgorithm
      */
-    public function __construct(string $fileContent, string $cipherComplexity)
+    public function __construct(SimpleEncryptionAlgorithm $simpleEncryptionAlgorithm, HardEncryptionAlgorithm $hardEncryptionAlgorithm)
     {
-        $this->cipherComplexity = $cipherComplexity;
-        $this->fileContent = $fileContent;
+        $this->simpleEncryptionAlgorithm = $simpleEncryptionAlgorithm;
+        $this->hardEncryptionAlgorithm = $hardEncryptionAlgorithm;
     }
 
     /**
-     * @return mixed
+     * @param string $fileContent
+     * @param string $cipherComplexity
+     * @return EncryptionAlgorithm
      * @throws MethodNotImplementedException
      */
-    public function find()
+    public function find(string $fileContent, string $cipherComplexity)
     {
 
-        if($this->cipherComplexity == CipherConstant::SIMPLE) {
-            return (new SimpleEncryptionAlgorithm($this->fileContent))->writeToFile();
+        if($cipherComplexity == CipherConstant::SIMPLE) {
+            return $this->simpleEncryptionAlgorithm->with($fileContent);
 
-        } else if($this->cipherComplexity == CipherConstant::HARD) {
-            return (new HardEncryptionAlgorithm($this->fileContent))->writeToFile();
+        } else if($cipherComplexity == CipherConstant::HARD) {
+            return $this->hardEncryptionAlgorithm->with($fileContent);
         }
 
         throw new MethodNotImplementedException('Cipher algorithm not implemented.');

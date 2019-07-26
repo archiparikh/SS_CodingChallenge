@@ -21,6 +21,22 @@ class CipherCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:cipher';
 
+    /**
+     * @var CipherProvider
+     */
+    private $cipherProvider;
+
+    /**
+     * CipherCommand constructor.
+     * @param CipherProvider $cipherProvider
+     */
+    public function __construct(CipherProvider $cipherProvider)
+    {
+        $this->cipherProvider = $cipherProvider;
+
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this
@@ -59,7 +75,7 @@ class CipherCommand extends Command
         $output->writeln("Starting $cipherMode: ".$file);
 
         try {
-            $cipherData = (new CipherProvider($file, $cipherMode, $cipherComplexity))->cipher();
+            $cipherData = $this->cipherProvider->with($file, $cipherMode, $cipherComplexity)->cipher();
         }
         catch(\Exception $e) {
             $cipherData = $e->getMessage();
