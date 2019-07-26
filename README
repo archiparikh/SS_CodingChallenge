@@ -1,0 +1,33 @@
+Encryption/Decryption Commands:
+
+To encrypt a text file, run the following command on the command line (replacing /path-to-file/filename.txt with the actual file path):
+
+php bin/console app:cipher /path-to-file/filename.txt Encryption -c Simple
+
+For example: php bin/console app:cipher /sample-data/cipher/plain.txt Encryption -c Simple
+
+
+To decrypt an encrypted text file, run the following command on the command line (replacing /path-to-file/filename.txt with the actual file path):
+
+php bin/console app:cipher /path-to-file/filename.txt Decryption -c Simple
+
+For example: php bin/console app:cipher /sample-data/cipher/decrypted.txt Decryption -c Simple
+
+
+The resulting encrytpted file will be placed at sample-data/cipher/encrypted_simple.txt
+The resulting decrytpted file will be placed at sample-data/cipher/decrypted_simple.txt
+
+Cipher Key:
+
+The cipher key was determined (by examining a known plain text file) to be as follows:
+
+abcdefghijklmnopqrstuvwxyz => zhimneyxwvutsrqpolkjgfdcba
+
+Cipher Key Solution:
+
+The Cipher key was solved via the following process.
+1) The word 'JXN' in the encrypted file was repeated the most times and so was mapped to the word 'The' (most common word in plain text file).
+2) The phrase 'hb Dwttwzs Kxzunkpnzln' was at the beginning of the encrypted file and was hypothesized to be the words 'by William Shakespeare'.
+
+And using the similar process the rest of the alphabets were mapped correctly. 
+However, I could not determine any particular pattern or mathematicl equation used for this cipher.
